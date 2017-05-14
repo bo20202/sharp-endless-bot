@@ -1,12 +1,25 @@
 ﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using BotCore.Configuration;
+using Newtonsoft.Json;
 
-namespace EndlessBot
+namespace BotCore
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            
+            MainAsync().GetAwaiter().GetResult();
+        }
+
+        private static async Task MainAsync()
+        {
+            EndlessBot bot = new EndlessBot();
+            bot.Start();
+            await Task.Delay(-1);
         }
     }
 }
