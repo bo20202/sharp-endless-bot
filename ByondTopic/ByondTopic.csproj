@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Net.NameResolution">
+      <HintPath>..\..\..\..\..\.nuget\packages\system.net.nameresolution\4.3.0\ref\netstandard1.3\System.Net.NameResolution.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.WebSockets">
+      <HintPath>..\..\..\..\..\.nuget\packages\system.net.websockets\4.3.0\ref\netstandard1.3\System.Net.WebSockets.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.WebSockets.Client">
+      <HintPath>..\..\..\..\..\.nuget\packages\system.net.websockets.client\4.3.1\ref\netstandard1.3\System.Net.WebSockets.Client.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
