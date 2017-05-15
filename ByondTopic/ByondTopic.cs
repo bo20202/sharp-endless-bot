@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Net.WebSockets;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ByondTopic
@@ -76,7 +74,7 @@ namespace ByondTopic
         private string ParseMessage(byte[] msgBytes, int bytesGot)
         {
             if ((msgBytes[0] == 0x00) && (msgBytes[1] == 0x83))
-            {
+            { 
                 return Encoding.UTF8.GetString(msgBytes, 6, bytesGot - 5);
             }
             return null;
