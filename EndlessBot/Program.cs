@@ -18,7 +18,7 @@ namespace BotCore
         private static async Task MainAsync()
         {
             EndlessBot bot = new EndlessBot();
-            bot.Start();
+            await bot.Start();
             await Task.Delay(-1);
         }
     }
