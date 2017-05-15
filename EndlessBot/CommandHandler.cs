@@ -3,6 +3,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using BotCore.Configuration;
+using BotCore.Modules;
+using Discord;
 using Microsoft.Extensions.DependencyInjection;
 using Discord.Commands;
 using Discord.WebSocket;
@@ -19,8 +21,9 @@ namespace BotCore
         {
             _provider = provider;
             _client = _provider.GetService<DiscordSocketClient>();
-            _client.MessageReceived += ProcessCommandAsync;
             _commands = provider.GetService<CommandService>();
+            _client.MessageReceived += ProcessCommandAsync;
+            _commands.Log += Log;
         }
 
         public async Task ConfigureAsync()
@@ -42,7 +45,14 @@ namespace BotCore
 
         private bool ParseTriggers(SocketUserMessage message, ref int argPos)
         {
-            return message.HasStringPrefix(Config.CommandPrefix, ref argPos) && Config.AllowedChannels.Any(id => ulong.Parse(id) == message.Channel.Id);
+            var a = message.HasStringPrefix(Config.CommandPrefix, ref argPos) && Config.AllowedChannels.Any(id => ulong.Parse(id) == message.Channel.Id);
+            return a;
+        }
+
+        private static Task Log(LogMessage msg)
+        {
+            Console.WriteLine(msg.ToString());
+            return Task.CompletedTask;
         }
     }
 }
