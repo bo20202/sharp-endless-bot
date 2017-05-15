@@ -36,9 +36,8 @@ namespace ByondTopic
 
                 return ParseMessage(buffer, bytesGot);
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e);
                 return null;
             }
         } 
