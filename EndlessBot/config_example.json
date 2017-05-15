@@ -1,0 +1,19 @@
+{
+  "Admins": ["admin_id1", "admin_id2"],
+  "CommandPrefix": "your_command_prefix",
+  "OwnerId": "bot_owner_id",
+
+  "Servers": [
+    {
+      "Ip": "127.0.0.1",
+      "Port": "1111",
+      "Name": "Example server 1"
+    },
+    {
+      "Ip": "localhost",
+      "Port": "2222",
+      "Name": "Example server 2"
+    }
+  ],
+  "Token": "your_token"
+}
