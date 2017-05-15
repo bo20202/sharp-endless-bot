@@ -7,12 +7,18 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace BotCore.Services.ServerMonitoring
 {
+    public class ServerMonitoringEventArgs : EventArgs
+    {
+        public ServerInfo ServerInfo;
+    }
+
     public class ServerMonitoringService
     {
         private bool _isMonitoring;
         private readonly List<Timer> _timers;
-        private readonly IServiceProvider _provider;
-        private string _monitorCommand;
+        private readonly string _monitorCommand;
+
+        public event EventHandler<ServerMonitoringEventArgs> GotServerData;
 
         public ServerMonitoringService()
         {
@@ -35,6 +41,8 @@ namespace BotCore.Services.ServerMonitoring
 
         public void StopMonitoring()
         {
+            if (!_isMonitoring)
+                return;
             foreach (var timer in _timers)
             {
                 timer.Dispose();
@@ -42,26 +50,24 @@ namespace BotCore.Services.ServerMonitoring
             _isMonitoring = false;
         }
 
-        private async void Monitor(object serverArg)
+        private void Monitor(object serverArg)
         {
-            try
+            Task.Run(async () =>
             {
-                Server server = (Server) serverArg;
+                Server server = (Server)serverArg;
                 var topic = new ByondTopic.ByondTopic();
                 var serverData = await topic.GetData(server.Ip, server.Port, _monitorCommand);
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
+                var info = ParseByondResponce(serverData);
+                ServerMonitoringEventArgs args = new ServerMonitoringEventArgs {ServerInfo = info};
+                GotServerData?.Invoke(this, args);
+            });
         }
 
         private ServerInfo ParseByondResponce(string responce)
         {
             var parsedQuery = QueryHelpers.ParseQuery(responce);
 
-            return new ServerInfo() {Admins = int.Parse(parsedQuery["admins"]), Players = int.Parse(parsedQuery["players"])};
+            return new ServerInfo {Admins = int.Parse(parsedQuery["admins"]), Players = int.Parse(parsedQuery["players"])};
         }
     }
 }
