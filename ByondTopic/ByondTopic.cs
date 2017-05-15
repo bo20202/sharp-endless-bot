@@ -9,7 +9,7 @@ namespace ByondTopic
     public class ByondTopic
     {
 
-        public async void SendTopicCommand(string ip, string port, string command)
+        public async Task SendTopicCommand(string ip, string port, string command)
         {
             await GetData(ip, port, command);
         }
