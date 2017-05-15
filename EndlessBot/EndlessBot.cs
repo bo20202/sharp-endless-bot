@@ -15,6 +15,8 @@ namespace BotCore
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
+        public static void Main(string[] args) => new EndlessBot().Start().GetAwaiter().GetResult();
+
         public async Task Start()
         {
             Config.LoadConfig();
@@ -27,6 +29,7 @@ namespace BotCore
 
             _handler = new CommandHandler(provider);
             await _handler.ConfigureAsync();
+            await Task.Delay(-1);
         }   
 
 
