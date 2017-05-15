@@ -55,18 +55,23 @@ namespace BotCore.Services.ServerMonitoring
             Task.Run(async () =>
             {
                 Server server = (Server)serverArg;
+
                 var topic = new ByondTopic.ByondTopic();
                 var serverData = await topic.GetData(server.Ip, server.Port, _monitorCommand);
                 var info = ParseByondResponce(serverData);
                 ServerMonitoringEventArgs args = new ServerMonitoringEventArgs {ServerInfo = info};
+                args.ServerInfo.Server = server;
                 GotServerData?.Invoke(this, args);
             });
         }
 
         private ServerInfo ParseByondResponce(string responce)
         {
-            var parsedQuery = QueryHelpers.ParseQuery(responce);
-
+            if (responce == null)
+            {
+                return new ServerInfo {IsOnline = false};
+            }
+            var parsedQuery = QueryHelpers.ParseQuery(responce);  
             return new ServerInfo {Admins = int.Parse(parsedQuery["admins"]), Players = int.Parse(parsedQuery["players"])};
         }
     }
