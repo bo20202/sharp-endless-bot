@@ -15,24 +15,38 @@ namespace BotCore.Modules
     public class ServerMonitoringModule : ModuleBase<SocketCommandContext>
     {
         private readonly ServerMonitoringService _service;
-        private readonly Dictionary<Server, RestUserMessage> _messages;
 
         public ServerMonitoringModule(ServerMonitoringService service)
         {
             _service = service;
-            _messages = new Dictionary<Server, RestUserMessage>();
         }
-        
+
+       
+        [Command("monitor")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        [Command("start")]
+        public async Task Monitor(string startOrStop)
+        {
+            switch (startOrStop.ToLower())
+            {
+                case "start":
+                    await Start();
+                    break;
+                case "stop":
+                    await Stop();
+                    break;
+            }       
+        }
+
         public async Task Start()
         { 
             await Context.Message.DeleteAsync();
-            if (_messages.Count == 0)
+            if (_service.IsMonitoring)
+                return;
+            if (_service.Messages.Count == 0)
             {
                 foreach (var server in Config.Servers)
                 {
-                    _messages[server] = await Context.Channel.SendMessageAsync($"{server.Name} info is loading...");
+                   _service.Messages[server] = await Context.Channel.SendMessageAsync($"{server.Name} info is loading...");
                 }
             }
             _service.StartMonitoring();
@@ -53,7 +67,7 @@ namespace BotCore.Modules
             Task.Run(async () =>
             {
                 var embed = BuildEmbed(args.ServerInfo);
-                await _messages[args.ServerInfo.Server].ModifyAsync(properties => { properties.Embed = embed;
+                await _service.Messages[args.ServerInfo.Server].ModifyAsync(properties => { properties.Embed = embed;
                     properties.Content = "";
                 });
 
