@@ -53,12 +53,16 @@ namespace BotCore.Modules
             _service.GotServerData += GotDataHandler;
         }
 
-        [RequireUserPermission(GuildPermission.Administrator)]
-        [Command("stop")]
+
         public async Task Stop()
         {
             await Context.Message.DeleteAsync();
             _service.StopMonitoring();
+            foreach (var msg in _service.Messages)
+            {
+                await msg.Value.DeleteAsync();
+            }
+            _service.Messages.Clear();
             _service.GotServerData -= GotDataHandler;
         }
 
