@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BotCore.Configuration;
+using Discord.Rest;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace BotCore.Services.ServerMonitoring
@@ -14,40 +15,43 @@ namespace BotCore.Services.ServerMonitoring
 
     public class ServerMonitoringService
     {
-        private bool _isMonitoring;
         private readonly List<Timer> _timers;
         private readonly string _monitorCommand;
+
+        public bool IsMonitoring { get; private set; }
+        public Dictionary<Server, RestUserMessage> Messages;
 
         public event EventHandler<ServerMonitoringEventArgs> GotServerData;
 
         public ServerMonitoringService()
         {
-            _isMonitoring = false;
+            IsMonitoring = false;
             _timers = new List<Timer>();
             _monitorCommand = "status";
+            Messages = new Dictionary<Server, RestUserMessage>();
         }
 
         public void StartMonitoring()
         {
-            if(_isMonitoring)
+            if(IsMonitoring)
                 return;
             foreach (var server in Config.Servers)
             {
                 var timer = new Timer(Monitor, server, 0, 10000);
                 _timers.Add(timer);
             }
-            _isMonitoring = true;
+            IsMonitoring = true;
         }
 
         public void StopMonitoring()
         {
-            if (!_isMonitoring)
+            if (!IsMonitoring)
                 return;
             foreach (var timer in _timers)
             {
                 timer.Dispose();
             }
-            _isMonitoring = false;
+            IsMonitoring = false;
         }
 
         private void Monitor(object serverArg)
