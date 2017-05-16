@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ByondTopic
+namespace Byond
 {
     public class ByondTopic
     {
@@ -20,7 +20,6 @@ namespace ByondTopic
             {
                 var message = BuildMessage(command);
                 var buffer = new byte[4096];
-
                 var host = await Dns.GetHostEntryAsync(ip);
                 var address = host.AddressList[0];
                 var endPoint = new IPEndPoint(address, int.Parse(port));
@@ -40,7 +39,7 @@ namespace ByondTopic
             {
                 return null;
             }
-        } 
+        }
 
         private byte[] BuildMessage(string command)
         {
@@ -54,15 +53,15 @@ namespace ByondTopic
 
             message.CopyTo(sendingBytes, 9);
 
-            return sendingBytes; 
-            
+            return sendingBytes;
+
             //i have no idea what the fuck i've actually done lol
             //thx to Rotem12 on byond forums
         }
 
         private byte[] Pack(int num)
         {
-            byte[] packed = BitConverter.GetBytes((short) num);
+            byte[] packed = BitConverter.GetBytes((short)num);
             if (BitConverter.IsLittleEndian)
             {
                 Array.Reverse(packed);
@@ -73,7 +72,7 @@ namespace ByondTopic
         private string ParseMessage(byte[] msgBytes, int bytesGot)
         {
             if ((msgBytes[0] == 0x00) && (msgBytes[1] == 0x83))
-            { 
+            {
                 return Encoding.UTF8.GetString(msgBytes, 6, bytesGot - 5);
             }
             return null;
