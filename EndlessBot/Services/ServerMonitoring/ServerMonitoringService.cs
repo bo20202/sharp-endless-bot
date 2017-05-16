@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BotCore.Configuration;
+using Byond;
 using Discord.Rest;
 using Microsoft.AspNetCore.WebUtilities;
 
@@ -60,7 +61,7 @@ namespace BotCore.Services.ServerMonitoring
             {
                 Server server = (Server)serverArg;
 
-                var topic = new ByondTopic.ByondTopic();
+                var topic = new ByondTopic();
                 var serverData = await topic.GetData(server.Ip, server.Port, _monitorCommand);
                 var info = ParseByondResponce(serverData);
                 ServerMonitoringEventArgs args = new ServerMonitoringEventArgs {ServerInfo = info};
