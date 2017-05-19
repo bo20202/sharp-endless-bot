@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BotCore.Configuration;
 using Byond;
 using Discord.Rest;
+using Discord.WebSocket;
 using Microsoft.AspNetCore.WebUtilities;
 
 namespace BotCore.Services.ServerMonitoring
@@ -19,40 +20,40 @@ namespace BotCore.Services.ServerMonitoring
         private readonly List<Timer> _timers;
         private readonly string _monitorCommand;
 
-        public bool IsMonitoring { get; private set; }
-        public Dictionary<Server, RestUserMessage> Messages;
+        public Dictionary<ISocketMessageChannel, bool> IsMonitoring { get; private set; }
+        public Dictionary<ISocketMessageChannel, Dictionary<Server, RestUserMessage>> Messages { get; set; }
 
         public event EventHandler<ServerMonitoringEventArgs> GotServerData;
 
         public ServerMonitoringService()
         {
-            IsMonitoring = false;
+            IsMonitoring = new Dictionary<ISocketMessageChannel, bool>();
             _timers = new List<Timer>();
             _monitorCommand = "status";
-            Messages = new Dictionary<Server, RestUserMessage>();
+            Messages = new Dictionary <ISocketMessageChannel, Dictionary<Server, RestUserMessage>>();
         }
 
-        public void StartMonitoring()
+        public void StartMonitoring(ISocketMessageChannel channel)
         {
-            if(IsMonitoring)
+            if(IsMonitoring[channel])
                 return;
             foreach (var server in Config.Servers)
             {
                 var timer = new Timer(Monitor, server, 0, 10000);
                 _timers.Add(timer);
             }
-            IsMonitoring = true;
+            IsMonitoring[channel] = true;
         }
 
-        public void StopMonitoring()
+        public void StopMonitoring(ISocketMessageChannel channel)
         {
-            if (!IsMonitoring)
+            if (!IsMonitoring[channel])
                 return;
             foreach (var timer in _timers)
             {
                 timer.Dispose();
             }
-            IsMonitoring = false;
+            IsMonitoring[channel] = false;
         }
 
         private void Monitor(object serverArg)
@@ -78,6 +79,14 @@ namespace BotCore.Services.ServerMonitoring
             }
             var parsedQuery = QueryHelpers.ParseQuery(responce);  
             return new ServerInfo {Admins = int.Parse(parsedQuery["admins"]), Players = int.Parse(parsedQuery["players"])};
+        }
+
+        public void InitializeForChannel(ISocketMessageChannel channel)
+        {
+            if (!IsMonitoring.ContainsKey(channel))
+                IsMonitoring[channel] = false;
+            if (!Messages.ContainsKey(channel))
+                Messages[channel] = new Dictionary<Server, RestUserMessage>();
         }
     }
 }

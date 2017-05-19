@@ -4,6 +4,7 @@ using BotCore.Configuration;
 using BotCore.Services.ServerMonitoring;
 using Discord;
 using Discord.Commands;
+using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -19,17 +20,24 @@ namespace BotCore
 
         public async Task Start()
         {
-            Config.LoadConfig();
-            _client = new DiscordSocketClient();
-            _client.Log += Log;
+            try
+            {
+                Config.LoadConfig();
+                _client = new DiscordSocketClient();
+                _client.Log += Log;
 
-            await _client.LoginAsync(TokenType.Bot, Config.Token);
-            await _client.StartAsync();
-            var provider = ConfigureBotServices();
+                await _client.LoginAsync(TokenType.Bot, Config.Token);
+                await _client.StartAsync();
+                var provider = ConfigureBotServices();
 
-            _handler = new CommandHandler(provider);
-            await _handler.ConfigureAsync();
-            await Task.Delay(-1);
+                _handler = new CommandHandler(provider);
+                await _handler.ConfigureAsync();
+                await Task.Delay(-1);
+            }
+            catch (WebSocketClosedException)
+            {
+                await _client.SetGameAsync("I was restarted, please restart monitoring.");
+            }
         }   
 
 

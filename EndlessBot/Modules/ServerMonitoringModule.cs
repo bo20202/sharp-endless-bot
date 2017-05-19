@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BotCore.Configuration;
@@ -23,7 +24,8 @@ namespace BotCore.Modules
 
        
         [Command("monitor")]
-        [RequireUserPermission(GuildPermission.Administrator)]
+        [RequireUserPermission(GuildPermission.BanMembers)]
+        [RequireAllowedRole]
         public async Task Monitor(string startOrStop)
         {
             switch (startOrStop.ToLower())
@@ -40,16 +42,19 @@ namespace BotCore.Modules
         public async Task Start()
         { 
             await Context.Message.DeleteAsync();
-            if (_service.IsMonitoring)
+            _service.InitializeForChannel(Context.Channel);
+
+            if (_service.IsMonitoring[Context.Channel])
                 return;
-            if (_service.Messages.Count == 0)
+
+            if (_service.Messages[Context.Channel].Count == 0)
             {
                 foreach (var server in Config.Servers)
                 {
-                   _service.Messages[server] = await Context.Channel.SendMessageAsync($"{server.Name} info is loading...");
+                   _service.Messages[Context.Channel][server] = await Context.Channel.SendMessageAsync($"{server.Name} info is loading...");
                 }
             }
-            _service.StartMonitoring();
+            _service.StartMonitoring(Context.Channel);
             _service.GotServerData += GotDataHandler;
         }
 
@@ -57,12 +62,12 @@ namespace BotCore.Modules
         public async Task Stop()
         {
             await Context.Message.DeleteAsync();
-            _service.StopMonitoring();
-            foreach (var msg in _service.Messages)
+            _service.StopMonitoring(Context.Channel);
+            foreach (var dict in _service.Messages[Context.Channel])
             {
-                await msg.Value.DeleteAsync();
+                await dict.Value.DeleteAsync();
             }
-            _service.Messages.Clear();
+            _service.Messages[Context.Channel].Clear();
             _service.GotServerData -= GotDataHandler;
         }
 
@@ -71,7 +76,7 @@ namespace BotCore.Modules
             Task.Run(async () =>
             {
                 var embed = BuildEmbed(args.ServerInfo);
-                await _service.Messages[args.ServerInfo.Server].ModifyAsync(properties => { properties.Embed = embed;
+                await _service.Messages[Context.Channel][args.ServerInfo.Server].ModifyAsync(properties => { properties.Embed = embed;
                     properties.Content = "";
                 });
 

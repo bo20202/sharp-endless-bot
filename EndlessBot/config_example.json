@@ -1,5 +1,5 @@
 {
-  "Admins": ["admin_id1", "admin_id2"],
+  "Admins": ["admin_role_1", "admin_role_2"],
   "CommandPrefix": "your_command_prefix",
   "OwnerId": "bot_owner_id",
 
