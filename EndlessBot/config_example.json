@@ -15,5 +15,7 @@
       "Name": "Example server 2"
     }
   ],
-  "Token": "your_token"
+  "Token": "your_token",
+  "MainChannelId": 12312123123123123,
+  "MainGuldId":  12345567889 
 }

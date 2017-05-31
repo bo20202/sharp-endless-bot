@@ -25,6 +25,11 @@ namespace BotCore.Configuration
         [JsonProperty("Token")]
         public static string Token { get; set; }
 
+        [JsonProperty("MainChannelId")]
+        public static ulong MainChannelId { get; set; }
+
+        [JsonProperty("MainGuildId")]
+        public static ulong MainGuildId { get; set; }
 
         public static void LoadConfig()
         {
