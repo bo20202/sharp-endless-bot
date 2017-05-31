@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using BotCore.Configuration;
 using BotCore.Services.ServerMonitoring;
@@ -15,6 +16,7 @@ namespace BotCore
     {
         private DiscordSocketClient _client;
         private CommandHandler _handler;
+        private IServiceProvider _provider;
 
         public static void Main(string[] args) => new EndlessBot().Start().GetAwaiter().GetResult();
 
@@ -28,18 +30,27 @@ namespace BotCore
 
                 await _client.LoginAsync(TokenType.Bot, Config.Token);
                 await _client.StartAsync();
-                var provider = ConfigureBotServices();
+                _provider = ConfigureBotServices();
 
-                _handler = new CommandHandler(provider);
+                _handler = new CommandHandler(_provider);
                 await _handler.ConfigureAsync();
                 await Task.Delay(-1);
             }
             catch (WebSocketClosedException)
             {
-                await _client.SetGameAsync("I was restarted, please restart monitoring.");
+                await SendRestartMeAsync();
             }
-        }   
+        }
 
+        private async Task SendRestartMeAsync()
+        {
+            var service = _provider.GetService<ServerMonitoringService>();
+            if (service.IsMonitoring.ContainsValue(true))
+            {
+                var channel = _client.GetGuild(Config.MainGuildId).GetTextChannel(Config.MainChannelId);
+                await channel.SendMessageAsync("Somehow I was disconnected from Discord. Please restart monitoring.");
+            }
+        }
 
         private IServiceProvider ConfigureBotServices()
         {
