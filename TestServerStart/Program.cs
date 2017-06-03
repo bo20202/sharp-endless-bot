@@ -45,8 +45,8 @@ namespace TestServerStart
                 StartInfo =
                 {
                     UseShellExecute = true,
-                    FileName = @"/bin/bash",
-                    Arguments = $"-c cd {server.ServerPath} && DreamDaemon cev_eris.dmb {server.Port} -safe -invisible",
+                    FileName = "DreamDaemon",
+                    Arguments = $"cev_eris.dmb {server.Port} -safe -invisible -cd {server.ServerPath}",
                     CreateNoWindow = true,
                     RedirectStandardError = true,
                     RedirectStandardOutput = true
