@@ -54,7 +54,8 @@ namespace BotCore.Configuration
         public string Port { get; set; }
         public string Name { get; set; }
         public string ShortName { get; set; }
-        public string ServerPath { get; set; }
+        public string ExecutablePath { get; set; }
+        public string ExecutableName { get; set; }
 
         public string ByondAddress => $"byond://{Ip}:{Port}";
     }
