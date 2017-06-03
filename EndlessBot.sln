@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Byond", "Byond\Byond.csproj", "{78F12CD0-AAED-4F21-BF31-156C64013B2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestServerStart", "TestServerStart\TestServerStart.csproj", "{9AEE6E2B-FD7B-47D8-A608-405774BE8EF5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{78F12CD0-AAED-4F21-BF31-156C64013B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78F12CD0-AAED-4F21-BF31-156C64013B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78F12CD0-AAED-4F21-BF31-156C64013B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AEE6E2B-FD7B-47D8-A608-405774BE8EF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AEE6E2B-FD7B-47D8-A608-405774BE8EF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AEE6E2B-FD7B-47D8-A608-405774BE8EF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AEE6E2B-FD7B-47D8-A608-405774BE8EF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
