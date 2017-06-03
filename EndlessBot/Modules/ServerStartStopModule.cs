@@ -17,16 +17,15 @@ namespace BotCore.Modules
 
         [Command("server")]
         [RequireAllowedRole]
-        public async Task HandleCommand(string args)
+        public async Task HandleCommand(string command, string lilServerName)
         {
-            var splatArgs = args.Split(' ');
-            switch (splatArgs[1].ToLower())
+            switch (command)
             {
                 case "start":
-                    await Start(splatArgs[2].ToLower());
+                    await Start(lilServerName.ToLower());
                     break;
                 case "stop":
-                    await Stop(splatArgs[2].ToLower());
+                    await Stop(lilServerName.ToLower());
                     break;
             }
         }
