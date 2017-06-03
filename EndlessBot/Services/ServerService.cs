@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using BotCore.Configuration;
@@ -58,7 +59,7 @@ namespace BotCore.Services.ServerMonitoring
                 {
                     UseShellExecute = true,
                     FileName = "DreamDaemon",
-                    Arguments = $"{server.ExecutableName} {server.Port} -cd {server.ExecutablePath} -safe -invisible",
+                    Arguments = $"{server.ExecutablePath + server.ExecutableName} {server.Port} -safe -invisible",
                     CreateNoWindow = true
                 }
             };
