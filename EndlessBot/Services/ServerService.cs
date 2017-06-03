@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Tasks;
 using BotCore.Configuration;
 using BotCore.Interfaces;
 
@@ -48,37 +49,41 @@ namespace BotCore.Services.ServerMonitoring
 
         private void StartServerOnLinux(Server server)
         {
-            if (ServerProcesses.ContainsKey(server))
+            Task.Run(() =>
             {
-                return;
-            }
-
-            var serverProcess = new Process
-            {
-                StartInfo =
+                if (ServerProcesses.ContainsKey(server))
                 {
-                    UseShellExecute = false,
-                    FileName = "DreamDaemon",
-                    Arguments = $"{server.ExecutablePath + server.ExecutableName} {server.Port} -safe -invisible",
-                    CreateNoWindow = true
+                    return;
                 }
-            };
 
-            serverProcess.ErrorDataReceived += (sender, e) =>
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(e.Data);
-                Console.ResetColor();
-            };
+                var serverProcess = new Process
+                {
+                    StartInfo =
+                    {
+                        UseShellExecute = false,
+                        FileName = "DreamDaemon",
+                        Arguments = $"{server.ExecutablePath + server.ExecutableName} {server.Port} -safe -invisible",
+                        CreateNoWindow = true
+                    }
+                };
 
-            serverProcess.OutputDataReceived += (sender, args) =>
-            {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine(args.Data);
-                Console.ResetColor();
-            };
-            serverProcess.Start();
-            ServerProcesses[server] = serverProcess;
+                serverProcess.ErrorDataReceived += (sender, e) =>
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.Data);
+                    Console.ResetColor();
+                };
+
+                serverProcess.OutputDataReceived += (sender, args) =>
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine(args.Data);
+                    Console.ResetColor();
+                };
+                serverProcess.Start();
+                ServerProcesses[server] = serverProcess;
+            });
+
         }
     }
 }
