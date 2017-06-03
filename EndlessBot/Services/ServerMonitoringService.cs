@@ -59,17 +59,15 @@ namespace BotCore.Services.ServerMonitoring
 
         private void Monitor(object serverArg)
         {
-            Task.Run(async () =>
-            {
-                Server server = (Server)serverArg;
+            Server server = (Server) serverArg;
 
-                var topic = new ByondTopic();
-                var serverData = await topic.GetData(server.Ip, server.Port, _monitorCommand);
-                var info = ParseByondResponce(serverData);
-                ServerMonitoringEventArgs args = new ServerMonitoringEventArgs {ServerInfo = info};
-                args.ServerInfo.Server = server;
-                GotServerData?.Invoke(this, args);
-            });
+            var topic = new ByondTopic();
+            var serverData = topic.GetData(server.Ip, server.Port, _monitorCommand);
+            var info = ParseByondResponce(serverData);
+            ServerMonitoringEventArgs args = new ServerMonitoringEventArgs {ServerInfo = info};
+
+            args.ServerInfo.Server = server;
+            GotServerData?.Invoke(this, args);
         }
 
         private ServerInfo ParseByondResponce(string responce)
@@ -79,7 +77,7 @@ namespace BotCore.Services.ServerMonitoring
                 return new ServerInfo {IsOnline = false};
             }
             var parsedQuery = QueryHelpers.ParseQuery(responce);  
-            return new ServerInfo {Admins = int.Parse(parsedQuery["admins"]), Players = int.Parse(parsedQuery["players"])};
+            return new ServerInfo {Admins = int.Parse(parsedQuery["admins"]), Players = int.Parse(parsedQuery["players"]), IsOnline = true};
         }
 
         public void InitializeForChannel(ISocketMessageChannel channel)
