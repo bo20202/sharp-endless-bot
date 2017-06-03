@@ -47,9 +47,7 @@ namespace TestServerStart
                     UseShellExecute = true,
                     FileName = "DreamDaemon",
                     Arguments = $"cev_eris.dmb {server.Port} -safe -invisible -cd {server.ServerPath}",
-                    CreateNoWindow = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true
+                    CreateNoWindow = true
                 }
             };
 
