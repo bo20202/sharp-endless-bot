@@ -59,7 +59,8 @@ namespace BotCore
                 .AddSingleton(_client)
                 .AddSingleton(new CommandService(
                     new CommandServiceConfig {CaseSensitiveCommands = false, ThrowOnError = false}))
-                .AddSingleton<IMonitoringService, ServerMonitoringService>();
+                .AddSingleton<IMonitoringService, ServerMonitoringService>()
+                .AddSingleton<IServerService, ServerService>();
 
             var provider = services.BuildServiceProvider();
             return provider;
