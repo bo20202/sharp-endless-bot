@@ -36,7 +36,7 @@ namespace BotCore.Modules
             {
                 if (server.ShortName != serverShortName) continue;
                 _service.StartServer(server);
-                await Context.Channel.SendMessageAsync("Server started.");
+                await Context.Channel.SendMessageAsync("Server starting...");
                 return;
             }
         }
@@ -47,7 +47,7 @@ namespace BotCore.Modules
             {
                 if (server.ShortName != serverShortName) continue;
                 _service.StopServer(server);
-                await Context.Channel.SendMessageAsync("Server stopped");
+                await Context.Channel.SendMessageAsync("Server stopped.");
                 return;
             }
         }

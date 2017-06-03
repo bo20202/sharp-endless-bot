@@ -37,7 +37,7 @@ namespace BotCore.Services.ServerMonitoring
 
         public void StopServer(Server server)
         {
-            ServerProcesses[server]?.Kill();
+            ServerProcesses[server].Kill();
         }
 
 
@@ -57,13 +57,26 @@ namespace BotCore.Services.ServerMonitoring
             {
                 StartInfo =
                 {
-                    UseShellExecute = true,
+                    UseShellExecute = false,
                     FileName = "DreamDaemon",
                     Arguments = $"{server.ExecutablePath + server.ExecutableName} {server.Port} -safe -invisible",
                     CreateNoWindow = true
                 }
             };
 
+            serverProcess.ErrorDataReceived += (sender, e) =>
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(e.Data);
+                Console.ResetColor();
+            };
+
+            serverProcess.OutputDataReceived += (sender, args) =>
+            {
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.WriteLine(args.Data);
+                Console.ResetColor();
+            };
             serverProcess.Start();
             ServerProcesses[server] = serverProcess;
         }
