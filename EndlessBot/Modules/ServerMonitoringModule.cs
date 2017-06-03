@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BotCore.Configuration;
+using BotCore.Interfaces;
 using BotCore.Preconditions;
 using BotCore.Services.ServerMonitoring;
 using Discord;
@@ -15,9 +16,9 @@ namespace BotCore.Modules
 {
     public class ServerMonitoringModule : ModuleBase<SocketCommandContext>
     {
-        private readonly ServerMonitoringService _service;
+        private readonly IMonitoringService _service;
 
-        public ServerMonitoringModule(ServerMonitoringService service)
+        public ServerMonitoringModule(IMonitoringService service)
         {
             _service = service;
         }
@@ -83,7 +84,7 @@ namespace BotCore.Modules
             });
         }
 
-        private Embed BuildEmbed(ServerInfo info)
+        private static Embed BuildEmbed(ServerInfo info)
         {
             if (!info.IsOnline)
             {

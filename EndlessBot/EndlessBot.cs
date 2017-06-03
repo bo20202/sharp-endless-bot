@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BotCore.Configuration;
+using BotCore.Interfaces;
 using BotCore.Services.ServerMonitoring;
 using Discord;
 using Discord.Commands;
@@ -58,7 +59,7 @@ namespace BotCore
                 .AddSingleton(_client)
                 .AddSingleton(new CommandService(
                     new CommandServiceConfig {CaseSensitiveCommands = false, ThrowOnError = false}))
-                .AddSingleton<ServerMonitoringService>();
+                .AddSingleton<IMonitoringService, ServerMonitoringService>();
 
             var provider = services.BuildServiceProvider();
             return provider;

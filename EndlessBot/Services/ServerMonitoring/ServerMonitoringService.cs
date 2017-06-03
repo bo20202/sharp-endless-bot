@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BotCore.Configuration;
+using BotCore.Interfaces;
 using Byond;
 using Discord.Rest;
 using Discord.WebSocket;
@@ -15,12 +16,12 @@ namespace BotCore.Services.ServerMonitoring
         public ServerInfo ServerInfo;
     }
 
-    public class ServerMonitoringService
+    public class ServerMonitoringService : IMonitoringService
     {
         private readonly List<Timer> _timers;
         private readonly string _monitorCommand;
 
-        public Dictionary<ISocketMessageChannel, bool> IsMonitoring { get; private set; }
+        public Dictionary<ISocketMessageChannel, bool> IsMonitoring { get; }
         public Dictionary<ISocketMessageChannel, Dictionary<Server, RestUserMessage>> Messages { get; set; }
 
         public event EventHandler<ServerMonitoringEventArgs> GotServerData;
