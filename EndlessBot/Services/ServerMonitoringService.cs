@@ -87,5 +87,15 @@ namespace BotCore.Services.ServerMonitoring
             if (!Messages.ContainsKey(channel))
                 Messages[channel] = new Dictionary<Server, RestUserMessage>();
         }
+
+        public void PauseMonitoring()
+        {
+            _timers.ForEach(x => x.Change(Timeout.Infinite, Timeout.Infinite));
+        }
+
+        public void ResumeMonitoring()
+        {
+            _timers.ForEach(x => x.Change(0, 10000));
+        }
     }
 }

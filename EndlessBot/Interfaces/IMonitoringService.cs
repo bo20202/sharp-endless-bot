@@ -16,5 +16,7 @@ namespace BotCore.Interfaces
         void StartMonitoring(ISocketMessageChannel channel);
         void StopMonitoring(ISocketMessageChannel channel);
         void InitializeForChannel(ISocketMessageChannel channel);
+        void PauseMonitoring();
+        void ResumeMonitoring();
     }
 }

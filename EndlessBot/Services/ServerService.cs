@@ -13,10 +13,12 @@ namespace BotCore.Services.ServerMonitoring
     public class ServerService : IServerService
     {
         public Dictionary<Server, Process> ServerProcesses { get; }
+        private IMonitoringService _monitoringService;
 
-        public ServerService()
+        public ServerService(IMonitoringService service)
         {
             ServerProcesses = new Dictionary<Server, Process>();
+            _monitoringService = service;
         }
 
         public void StartServer(Server server)
@@ -39,6 +41,8 @@ namespace BotCore.Services.ServerMonitoring
         public void StopServer(Server server)
         {
             ServerProcesses[server].Kill();
+            ServerProcesses[server].Dispose();
+            ServerProcesses.Remove(server);
         }
 
 
@@ -49,40 +53,26 @@ namespace BotCore.Services.ServerMonitoring
 
         private void StartServerOnLinux(Server server)
         {
-            Task.Run(() =>
+            if (ServerProcesses.ContainsKey(server))
             {
-                if (ServerProcesses.ContainsKey(server))
+                return;
+            }
+
+            var serverProcess = new Process
+            {
+                StartInfo =
                 {
-                    return;
+                    UseShellExecute = false,
+                    FileName = "DreamDaemon",
+                    Arguments = $"{server.ExecutablePath + server.ExecutableName} {server.Port} -safe -invisible",
+                    CreateNoWindow = true
                 }
+            };
 
-                var serverProcess = new Process
-                {
-                    StartInfo =
-                    {
-                        UseShellExecute = false,
-                        FileName = "DreamDaemon",
-                        Arguments = $"{server.ExecutablePath + server.ExecutableName} {server.Port} -safe -invisible",
-                        CreateNoWindow = true
-                    }
-                };
-
-                serverProcess.ErrorDataReceived += (sender, e) =>
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(e.Data);
-                    Console.ResetColor();
-                };
-
-                serverProcess.OutputDataReceived += (sender, args) =>
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine(args.Data);
-                    Console.ResetColor();
-                };
-                serverProcess.Start();
-                ServerProcesses[server] = serverProcess;
-            });
+            serverProcess.Start();
+            _monitoringService.PauseMonitoring();
+            ServerProcesses[server] = serverProcess;
+            _monitoringService.ResumeMonitoring();
 
         }
     }
