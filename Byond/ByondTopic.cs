@@ -9,23 +9,22 @@ namespace Byond
     public class ByondTopic
     {
 
-        public async Task SendTopicCommand(string ip, string port, string command)
+        public void SendTopicCommand(string ip, string port, string command)
         {
-            await GetData(ip, port, command);
+            GetData(ip, port, command);
         }
 
-        public async Task<string> GetData(string ip, string port, string command)
+        public string GetData(string ip, string port, string command)
         {
             try
             {
                 var message = BuildMessage(command);
                 var buffer = new byte[4096];
-                var host = await Dns.GetHostEntryAsync(ip);
-                var address = host.AddressList[0];
+                var address = IPAddress.Parse(ip);
                 var endPoint = new IPEndPoint(address, int.Parse(port));
 
                 Socket sender = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                await sender.ConnectAsync(endPoint);
+                sender.Connect(endPoint);
 
                 sender.Send(message);
 
@@ -35,7 +34,7 @@ namespace Byond
 
                 return ParseMessage(buffer, bytesGot);
             }
-            catch
+            catch(Exception ex)
             {
                 return null;
             }
@@ -73,7 +72,8 @@ namespace Byond
         {
             if ((msgBytes[0] == 0x00) && (msgBytes[1] == 0x83))
             {
-                return Encoding.UTF8.GetString(msgBytes, 6, bytesGot - 5);
+                var resp = Encoding.UTF8.GetString(msgBytes, 6, bytesGot - 5);
+                return resp;
             }
             return null;
         }

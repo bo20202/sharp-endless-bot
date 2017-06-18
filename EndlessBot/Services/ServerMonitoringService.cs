@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using BotCore.Configuration;
+using BotCore.Interfaces;
 using Byond;
 using Discord.Rest;
 using Discord.WebSocket;
@@ -15,12 +16,12 @@ namespace BotCore.Services.ServerMonitoring
         public ServerInfo ServerInfo;
     }
 
-    public class ServerMonitoringService
+    public class ServerMonitoringService : IMonitoringService
     {
         private readonly List<Timer> _timers;
         private readonly string _monitorCommand;
 
-        public Dictionary<ISocketMessageChannel, bool> IsMonitoring { get; private set; }
+        public Dictionary<ISocketMessageChannel, bool> IsMonitoring { get; }
         public Dictionary<ISocketMessageChannel, Dictionary<Server, RestUserMessage>> Messages { get; set; }
 
         public event EventHandler<ServerMonitoringEventArgs> GotServerData;
@@ -58,17 +59,15 @@ namespace BotCore.Services.ServerMonitoring
 
         private void Monitor(object serverArg)
         {
-            Task.Run(async () =>
-            {
-                Server server = (Server)serverArg;
+            Server server = (Server) serverArg;
 
-                var topic = new ByondTopic();
-                var serverData = await topic.GetData(server.Ip, server.Port, _monitorCommand);
-                var info = ParseByondResponce(serverData);
-                ServerMonitoringEventArgs args = new ServerMonitoringEventArgs {ServerInfo = info};
-                args.ServerInfo.Server = server;
-                GotServerData?.Invoke(this, args);
-            });
+            var topic = new ByondTopic();
+            var serverData = topic.GetData(server.Ip, server.Port, _monitorCommand);
+            var info = ParseByondResponce(serverData);
+            ServerMonitoringEventArgs args = new ServerMonitoringEventArgs {ServerInfo = info};
+
+            args.ServerInfo.Server = server;
+            GotServerData?.Invoke(this, args);
         }
 
         private ServerInfo ParseByondResponce(string responce)
@@ -78,7 +77,7 @@ namespace BotCore.Services.ServerMonitoring
                 return new ServerInfo {IsOnline = false};
             }
             var parsedQuery = QueryHelpers.ParseQuery(responce);  
-            return new ServerInfo {Admins = int.Parse(parsedQuery["admins"]), Players = int.Parse(parsedQuery["players"])};
+            return new ServerInfo {Admins = int.Parse(parsedQuery["admins"]), Players = int.Parse(parsedQuery["players"]), IsOnline = true};
         }
 
         public void InitializeForChannel(ISocketMessageChannel channel)
@@ -87,6 +86,16 @@ namespace BotCore.Services.ServerMonitoring
                 IsMonitoring[channel] = false;
             if (!Messages.ContainsKey(channel))
                 Messages[channel] = new Dictionary<Server, RestUserMessage>();
+        }
+
+        public void PauseMonitoring()
+        {
+            _timers.ForEach(x => x.Change(Timeout.Infinite, Timeout.Infinite));
+        }
+
+        public void ResumeMonitoring()
+        {
+            _timers.ForEach(x => x.Change(0, 10000));
         }
     }
 }

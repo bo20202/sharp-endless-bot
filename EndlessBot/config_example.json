@@ -7,15 +7,21 @@
     {
       "Ip": "127.0.0.1",
       "Port": "1111",
-      "Name": "Example server 1"
+      "Name": "Example server 1",
+      "ShortName": "ex1",
+      "ExecutablePath": "C:\\Path\\To\\Server\\dmb",
+      "ExecutableName": "Aaaa.dmb"
     },
     {
       "Ip": "localhost",
       "Port": "2222",
-      "Name": "Example server 2"
+      "Name": "Example server 2",
+      "ShortName": "ex2",
+      "ExecutablePath": "C:\\Path\\To\\AnotherServer\\dmb",
+      "ExecutableName": "aa.dmb"
     }
   ],
   "Token": "your_token",
   "MainChannelId": 12312123123123123,
-  "MainGuldId":  12345567889 
+  "MainGuildId":  12345567889 
 }

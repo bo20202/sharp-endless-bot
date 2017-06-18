@@ -45,7 +45,7 @@ namespace BotCore
 
         private bool ParseTriggers(SocketUserMessage message, ref int argPos)
         {
-            var a = message.HasStringPrefix(Config.CommandPrefix, ref argPos) && Config.AllowedChannels.Any(id => ulong.Parse(id) == message.Channel.Id);
+            var a = message.HasStringPrefix(Config.CommandPrefix, ref argPos);
             return a;
         }
 
