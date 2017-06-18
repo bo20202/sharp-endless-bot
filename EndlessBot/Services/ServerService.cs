@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using BotCore.Configuration;
 using BotCore.Interfaces;
 
@@ -13,7 +14,7 @@ namespace BotCore.Services.ServerMonitoring
     public class ServerService : IServerService
     {
         public Dictionary<Server, Process> ServerProcesses { get; }
-        private IMonitoringService _monitoringService;
+        private readonly IMonitoringService _monitoringService;
 
         public ServerService(IMonitoringService service)
         {
@@ -29,13 +30,8 @@ namespace BotCore.Services.ServerMonitoring
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                StartServerOnWindows(server);
-            }
-            else
-            {
                 throw new Exception("Your operating system is not supported");
             }
-            
         }
 
         public void StopServer(Server server)
@@ -43,12 +39,6 @@ namespace BotCore.Services.ServerMonitoring
             ServerProcesses[server].Kill();
             ServerProcesses[server].Dispose();
             ServerProcesses.Remove(server);
-        }
-
-
-        private void StartServerOnWindows(Server server)
-        {
-            throw new NotImplementedException();
         }
 
         private void StartServerOnLinux(Server server)
@@ -62,17 +52,13 @@ namespace BotCore.Services.ServerMonitoring
             {
                 StartInfo =
                 {
-                    UseShellExecute = false,
                     FileName = "DreamDaemon",
                     Arguments = $"{server.ExecutablePath + server.ExecutableName} {server.Port} -safe -invisible",
-                    CreateNoWindow = true
+                    RedirectStandardOutput = true
                 }
             };
-
-            serverProcess.Start();
-            _monitoringService.PauseMonitoring();
             ServerProcesses[server] = serverProcess;
-            _monitoringService.ResumeMonitoring();
+            serverProcess.Start();
 
         }
     }
