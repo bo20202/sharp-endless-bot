@@ -8,18 +8,19 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using BotCore.Configuration;
 using BotCore.Interfaces;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 
 namespace BotCore.Services.ServerMonitoring
 {
     public class ServerService : IServerService
     {
         public Dictionary<Server, Process> ServerProcesses { get; }
-        private readonly IMonitoringService _monitoringService;
-
-        public ServerService(IMonitoringService service)
+        public SocketCommandContext Context { get; set; }
+        public ServerService()
         {
             ServerProcesses = new Dictionary<Server, Process>();
-            _monitoringService = service;
         }
 
         public void StartServer(Server server)
@@ -54,12 +55,78 @@ namespace BotCore.Services.ServerMonitoring
                 {
                     FileName = "DreamDaemon",
                     Arguments = $"{server.ExecutablePath + server.ExecutableName} {server.Port} -safe -invisible",
-                    RedirectStandardOutput = true
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false
                 }
             };
             ServerProcesses[server] = serverProcess;
+            
+
+            serverProcess.ErrorDataReceived += async (s, e) => await OnErrorReceived(s, e, server);
+            serverProcess.OutputDataReceived += async (s, e) => await OnDataReceived(s, e, server);
+            serverProcess.Exited += async (s, e) => await OnExit(s, e, server);
+
             serverProcess.Start();
 
+            serverProcess.BeginErrorReadLine();
+            serverProcess.BeginOutputReadLine();
+
+        }
+
+
+        private async Task OnExit(object sender, EventArgs e, Server server)
+        {
+            if (Context == null)
+            {
+                Console.WriteLine("C O N T E X T");
+            }
+            else if (Context.Guild == null)
+            {
+                Console.WriteLine("G U I L D");
+            }
+            ISocketMessageChannel channel = Context?.Guild?.GetTextChannel(server.LogChannel);
+            var sendMessageAsync = channel?.SendMessageAsync($"{server.Name} process exited");
+            if (sendMessageAsync != null)
+                await sendMessageAsync;
+        }
+
+        private async Task OnDataReceived(object sender, DataReceivedEventArgs e, Server server)
+        {
+            if (Context == null)
+            {
+                Console.WriteLine("C O N T E X T");
+            }
+            else if (Context.Guild == null)
+            {
+                Console.WriteLine("G U I L D");
+            }
+            ISocketMessageChannel channel = Context?.Guild?.GetTextChannel(server.LogChannel);
+            if (!string.IsNullOrWhiteSpace(e.Data))
+            {
+                var sendMessageAsync = channel?.SendMessageAsync($"INFO_{server.ShortName}: {e.Data}");
+                if (sendMessageAsync != null)
+                    await sendMessageAsync;
+            }
+        }
+
+        private async Task OnErrorReceived(object sender, DataReceivedEventArgs e, Server server)
+        {
+            if (Context == null)
+            {
+                Console.WriteLine("C O N T E X T");
+            }
+            else if (Context.Guild == null)
+            {
+                Console.WriteLine("G U I L D");
+            }
+            ISocketMessageChannel channel = Context?.Guild?.GetTextChannel(server.LogChannel);
+            if (!string.IsNullOrWhiteSpace(e.Data))
+            {
+                var sendMessageAsync = channel?.SendMessageAsync($"ERROR_{server.ShortName}: {e.Data}");
+                if (sendMessageAsync != null)
+                    await sendMessageAsync;
+            }
         }
     }
 }
