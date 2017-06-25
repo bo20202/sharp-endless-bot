@@ -9,16 +9,18 @@
       "Port": "1111",
       "Name": "Example server 1",
       "ShortName": "ex1",
-      "ExecutablePath": "C:\\Path\\To\\Server\\dmb",
-      "ExecutableName": "Aaaa.dmb"
+      "ExecutablePath": "/path/to/server/",
+      "ExecutableName": "Aaaa.dmb",
+      "LogChannel": 123455677
     },
     {
       "Ip": "localhost",
       "Port": "2222",
       "Name": "Example server 2",
       "ShortName": "ex2",
-      "ExecutablePath": "C:\\Path\\To\\AnotherServer\\dmb",
-      "ExecutableName": "aa.dmb"
+      "ExecutablePath": "/path/to/another/server",
+      "ExecutableName": "aa.dmb",
+      "LogChannel": 12431231231241
     }
   ],
   "Token": "your_token",
