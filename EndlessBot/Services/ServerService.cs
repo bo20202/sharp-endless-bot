@@ -104,7 +104,7 @@ namespace BotCore.Services.ServerMonitoring
             ISocketMessageChannel channel = Context?.Guild?.GetTextChannel(server.LogChannel);
             if (!string.IsNullOrWhiteSpace(e.Data))
             {
-                var sendMessageAsync = channel?.SendMessageAsync($"INFO: {e.Data}");
+                var sendMessageAsync = channel?.SendMessageAsync($"INFO_{server.ShortName}: {e.Data}");
                 if (sendMessageAsync != null)
                     await sendMessageAsync;
             }
@@ -123,7 +123,7 @@ namespace BotCore.Services.ServerMonitoring
             ISocketMessageChannel channel = Context?.Guild?.GetTextChannel(server.LogChannel);
             if (!string.IsNullOrWhiteSpace(e.Data))
             {
-                var sendMessageAsync = channel?.SendMessageAsync($"INFO: {e.Data}");
+                var sendMessageAsync = channel?.SendMessageAsync($"ERROR_{server.ShortName}: {e.Data}");
                 if (sendMessageAsync != null)
                     await sendMessageAsync;
             }
