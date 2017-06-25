@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using BotCore.Configuration;
 using BotCore.Interfaces;
 using BotCore.Preconditions;
@@ -12,13 +13,14 @@ namespace BotCore.Modules
 
         public ServerStartStopModule(IServerService service)
         {
-            _service = service;
+            _service = service;   
         }
 
         [Command("server")]
         [RequireAllowedRole]
         public async Task HandleCommand(string command, string lilServerName)
         {
+            _service.Context = Context;
             switch (command)
             {
                 case "start":

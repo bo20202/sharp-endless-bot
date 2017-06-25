@@ -56,6 +56,7 @@ namespace BotCore.Configuration
         public string ShortName { get; set; }
         public string ExecutablePath { get; set; }
         public string ExecutableName { get; set; }
+        public ulong LogChannel { get; set; }
 
         public string ByondAddress => $"byond://{Ip}:{Port}";
     }
