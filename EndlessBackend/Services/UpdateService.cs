@@ -54,7 +54,6 @@ namespace EndlessBackend.Services
         {
             try
             {
-                GetOldestDirectory();
 
                 await Task.Run(() =>
                 {
@@ -72,7 +71,7 @@ namespace EndlessBackend.Services
             }
             return _result;
         
-
+        }
         private void CreateNewVersion()
         {
             var updateProcess = new Process()
