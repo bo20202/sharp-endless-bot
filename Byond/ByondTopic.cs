@@ -6,21 +6,26 @@ using System.Threading.Tasks;
 
 namespace Byond
 {
-    public class ByondTopic
+    public static class ByondTopic
     {
 
-        public void SendTopicCommand(string ip, string port, string command)
+        public static async void SendTopicCommand(string ip, string port, string command)
         {
-            GetData(ip, port, command);
+            await GetData(ip, port, command);
         }
 
-        public string GetData(string ip, string port, string command)
+        public static async Task<string> GetData(string ip, string port, string command)
         {
             try
             {
                 var message = BuildMessage(command);
                 var buffer = new byte[4096];
-                var address = IPAddress.Parse(ip);
+                IPAddress address;
+                if (!IPAddress.TryParse(ip, out address))
+                {
+                    var host = await Dns.GetHostEntryAsync(ip);
+                    address = host.AddressList[0];
+                }
                 var endPoint = new IPEndPoint(address, int.Parse(port));
 
                 Socket sender = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -34,13 +39,13 @@ namespace Byond
 
                 return ParseMessage(buffer, bytesGot);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return null;
             }
         }
 
-        private byte[] BuildMessage(string command)
+        private static byte[] BuildMessage(string command)
         {
             command = "?" + command;
 
@@ -58,7 +63,7 @@ namespace Byond
             //thx to Rotem12 on byond forums
         }
 
-        private byte[] Pack(int num)
+        private static byte[] Pack(int num)
         {
             byte[] packed = BitConverter.GetBytes((short)num);
             if (BitConverter.IsLittleEndian)
@@ -68,7 +73,7 @@ namespace Byond
             return packed;
         }
 
-        private string ParseMessage(byte[] msgBytes, int bytesGot)
+        private static string ParseMessage(byte[] msgBytes, int bytesGot)
         {
             if ((msgBytes[0] == 0x00) && (msgBytes[1] == 0x83))
             {

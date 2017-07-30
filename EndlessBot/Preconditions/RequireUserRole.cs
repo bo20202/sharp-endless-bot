@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using BotCore.Configuration;
 using Discord.Commands;
 using Discord.WebSocket;
+using EndlessConfiguration;
 
 namespace BotCore.Preconditions
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using BotCore.Configuration;
 using Discord.Commands;
+using EndlessConfiguration.Models;
 
 namespace BotCore.Interfaces
 {
