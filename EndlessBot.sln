@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotCore", "EndlessBot\BotCore.csproj", "{410FF4AE-AD94-4ACC-AC7A-1093F486DFDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BotCore", "EndlessBot\BotCore.csproj", "{410FF4AE-AD94-4ACC-AC7A-1093F486DFDB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{AA6E5DB2-F2AB-4BF6-A235-00730F8DC40A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Byond", "Byond\Byond.csproj", "{78F12CD0-AAED-4F21-BF31-156C64013B2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Byond", "Byond\Byond.csproj", "{78F12CD0-AAED-4F21-BF31-156C64013B2B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EndlessBackend", "EndlessBackend\EndlessBackend.csproj", "{032B7A12-11A7-40A6-A899-A5C1237BCB37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndlessConfiguration", "EndlessConfiguration\EndlessConfiguration.csproj", "{8321D569-7889-4541-B86F-03211A48097C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +27,14 @@ Global
 		{78F12CD0-AAED-4F21-BF31-156C64013B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78F12CD0-AAED-4F21-BF31-156C64013B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78F12CD0-AAED-4F21-BF31-156C64013B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{032B7A12-11A7-40A6-A899-A5C1237BCB37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{032B7A12-11A7-40A6-A899-A5C1237BCB37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{032B7A12-11A7-40A6-A899-A5C1237BCB37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{032B7A12-11A7-40A6-A899-A5C1237BCB37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8321D569-7889-4541-B86F-03211A48097C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8321D569-7889-4541-B86F-03211A48097C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8321D569-7889-4541-B86F-03211A48097C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8321D569-7889-4541-B86F-03211A48097C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

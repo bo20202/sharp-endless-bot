@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using BotCore.Configuration;
+﻿using System.Threading.Tasks;
 using BotCore.Interfaces;
 using BotCore.Preconditions;
-using BotCore.Services.ServerMonitoring;
+using BotCore.Services;
 using Discord;
 using Discord.Commands;
-using Discord.Rest;
-using Discord.WebSocket;
+using EndlessConfiguration;
+using EndlessConfiguration.Models;
 
 namespace BotCore.Modules
 {
@@ -89,7 +84,7 @@ namespace BotCore.Modules
             if (!info.IsOnline)
             {
                 var embed = new EmbedBuilder().WithTitle("Server info");
-                embed.AddField("Server status:", $"{info.Server.Name} is offline");
+                embed.AddField("Server status:", $"{info.Server.Name} is offline or not responding.");
                 return embed;
             }
             else

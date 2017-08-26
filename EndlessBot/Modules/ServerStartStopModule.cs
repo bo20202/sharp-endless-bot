@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
-using BotCore.Configuration;
 using BotCore.Interfaces;
 using BotCore.Preconditions;
 using Discord.Commands;
+using EndlessConfiguration;
 
 namespace BotCore.Modules
 {

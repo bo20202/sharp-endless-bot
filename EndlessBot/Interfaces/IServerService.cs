@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using BotCore.Configuration;
 using Discord.Commands;
+using EndlessConfiguration.Models;
+using EndlessConfiguration.Models.Server;
 
 namespace BotCore.Interfaces
 {

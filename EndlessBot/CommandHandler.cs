@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using BotCore.Configuration;
 using BotCore.Modules;
 using Discord;
 using Microsoft.Extensions.DependencyInjection;
 using Discord.Commands;
 using Discord.WebSocket;
+using EndlessConfiguration;
 
 namespace BotCore
 {

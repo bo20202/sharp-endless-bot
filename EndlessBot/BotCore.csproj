@@ -14,6 +14,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Byond\Byond.csproj" />
+    <ProjectReference Include="..\EndlessConfiguration\EndlessConfiguration.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Backend\" />
   </ItemGroup>
 
 </Project>

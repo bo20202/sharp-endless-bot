@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using BotCore.Configuration;
 using BotCore.Interfaces;
-using BotCore.Services.ServerMonitoring;
+using BotCore.Services;
 using Discord;
 using Discord.Commands;
 using Discord.Net;
 using Discord.WebSocket;
+using EndlessConfiguration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace BotCore
 {
@@ -40,6 +38,10 @@ namespace BotCore
             catch (WebSocketClosedException)
             {
                 await SendRestartMeAsync();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
             }
         }
 

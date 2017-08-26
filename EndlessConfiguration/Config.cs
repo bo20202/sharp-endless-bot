@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using EndlessConfiguration.Models;
+using EndlessConfiguration.Models.Backend;
+using EndlessConfiguration.Models.Server;
 using Newtonsoft.Json;
 
-namespace BotCore.Configuration
+namespace EndlessConfiguration
 {
     public class Config
-    {   
+    {
         [JsonProperty("Admins")]
         public static IEnumerable<string> Admins { get; set; }
 
@@ -31,13 +34,29 @@ namespace BotCore.Configuration
         [JsonProperty("MainGuildId")]
         public static ulong MainGuildId { get; set; }
 
-        public static void LoadConfig()
+        [JsonProperty("Backend")]
+        public static Backend Backend { get; set; }
+
+        [JsonProperty("SecretCode")]
+        public static string SecretCode { get; set; }
+
+        [JsonProperty("ServerRepo")]
+        public static string ServerRepo { get; set; }
+
+        [JsonProperty("WorkingDirectory")]
+        public static string WorkingDirectory { get; set; }
+
+        [JsonProperty("UpdaterScriptPath")]
+        public static string Updater { get; set; }
+
+
+        public static void LoadConfig(string path = "config.json")
         {
             Console.WriteLine("Reading configuration file.");
 
             try
             {
-                string jsonString = File.ReadAllText("config.json");
+                string jsonString = File.ReadAllText(path);
                 JsonConvert.DeserializeObject(jsonString, typeof(Config));
             }
             catch (Exception e)
@@ -46,18 +65,12 @@ namespace BotCore.Configuration
                 Console.WriteLine("Your config file is not presented or corrupt");
             }
         }
-    }
 
-    public class Server
-    {
-        public string Ip { get; set; }
-        public string Port { get; set; }
-        public string Name { get; set; }
-        public string ShortName { get; set; }
-        public string ExecutablePath { get; set; }
-        public string ExecutableName { get; set; }
-        public ulong LogChannel { get; set; }
-
-        public string ByondAddress => $"byond://{Ip}:{Port}";
+        public static void UpdateConfig(string path = "config.json")
+        {
+            var config = new Config();
+            string serialized = JsonConvert.SerializeObject(config);
+            File.WriteAllText(path, serialized);
+        }
     }
 }

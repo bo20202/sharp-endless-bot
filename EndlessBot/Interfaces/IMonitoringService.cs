@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using BotCore.Configuration;
-using BotCore.Services.ServerMonitoring;
+using BotCore.Services;
 using Discord.Rest;
 using Discord.WebSocket;
+using EndlessConfiguration.Models;
+using EndlessConfiguration.Models.Server;
 
 namespace BotCore.Interfaces
 {
@@ -16,7 +17,5 @@ namespace BotCore.Interfaces
         void StartMonitoring(ISocketMessageChannel channel);
         void StopMonitoring(ISocketMessageChannel channel);
         void InitializeForChannel(ISocketMessageChannel channel);
-        void PauseMonitoring();
-        void ResumeMonitoring();
     }
 }
