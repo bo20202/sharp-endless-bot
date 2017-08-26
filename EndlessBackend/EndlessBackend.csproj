@@ -26,6 +26,9 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="config.json" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Byond\Byond.csproj" />
     <ProjectReference Include="..\EndlessConfiguration\EndlessConfiguration.csproj" />
   </ItemGroup>

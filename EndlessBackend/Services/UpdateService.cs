@@ -3,115 +3,91 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using EndlessConfiguration;
 using EndlessConfiguration.Models;
 using EndlessConfiguration.Models.Backend.Result;
+using EndlessConfiguration.Models.Server;
 
 namespace EndlessBackend.Services
 {
     public class UpdateService
     {
-        private List<GameServerUpdateModel> Servers { get; }
+        private static Server _server;
 
-        public UpdateService()
+        private UpdateService(Server server)
         {
-            Servers = new List<GameServerUpdateModel>();
-            foreach (var server in Config.Servers)
-            {
-                Servers.Add(new GameServerUpdateModel(server));
-            }
+            _server = server;
         }
 
-        public async Task<GameServerResponceModel> UpdateServer(string serverShortName)
+        public static UpdateService Inititalize (string serverName)
         {
-            var server = Servers.SingleOrDefault(x => x.Server.ShortName == serverShortName);
-            if (server == null)
-            {
-                return new GameServerResponceModel("Server not found", true);
-            }
-
-            return await server.UpdateAsync();
-        }
-    }
-
-    internal class GameServerUpdateModel
-    {
-        public GameServerUpdateModel(Server server)
-        {
-            Server = server;
+            var server = Config.Servers.Single(x => x.ShortName == serverName);
+            return server == null ? null : new UpdateService(server);
         }
 
-        public Server Server { get; set; }
-        public DirectoryInfo CurrentVersion { get; set; }
-        public DirectoryInfo PreviousVersion { get; set; }
-
-        private string PreviousFolderPath => $"{Config.WorkingDirectory}cev-eris-{Server.ShortName}-previous/";
-        
-        private GameServerResponceModel _result = new GameServerResponceModel("Server was updated", true);
-
-        public async Task<GameServerResponceModel> UpdateAsync()
+        public GameServerResponceModel Update()
         {
             try
             {
-
-                await Task.Run(() =>
+                var directoryList = Directory.GetDirectories(_server.VersionsDirectory);
+                if (directoryList.Length < 3)
                 {
-                    if (!Directory.Exists(CurrentFolderPath) || !Directory.EnumerateFileSystemEntries(CurrentFolderPath).Any())
-                    {
-                        DownloadBuild();
-                    }
-                });
+                    throw new Exception("Can't update, please initialize");
+                }
 
-                return _result;
+                string newVersionPath = $"{_server.VersionsDirectory}{DateTime.Now:yyyyMMddHHmm}";
+                string currentVersionPath = $"{_server.VersionsDirectory}{_server.CurrentVersion}";
+                StartUpdateScript(newVersionPath, currentVersionPath, _server.ExecutablePath);
+
+                string oldestVersionPath = directoryList.OrderBy(x => x).First();
+                DeleteOldestVersion(oldestVersionPath);
+                _server.CurrentVersion = newVersionPath;
+                Config.UpdateConfig();
+
+                return new GameServerResponceModel("Server is updated.", false);
             }
             catch (Exception e)
             {
-                _result = new GameServerResponceModel(e.Message, true);
+                return new GameServerResponceModel(e.Message, true);
             }
-            return _result;
-        
         }
-        private void CreateNewVersion()
+
+        private static void DeleteOldestVersion(string oldestVersion)
         {
-            var updateProcess = new Process()
+            var check = new Process {StartInfo = new ProcessStartInfo("lsof", $"+D {oldestVersion}"){RedirectStandardOutput = true}};
+            check.Start();
+            check.WaitForExit();
+            string stdout = check.StandardOutput.ReadToEnd();
+            if (stdout.Contains("DreamDaem"))
             {
-                StartInfo =
-                {
-                    FileName = "perl",
-                    WorkingDirectory = Config.WorkingDirectory,
-                    Arguments = $"{Config.Updater} --cdir {CurrentFolderPath} --pdir {PreviousFolderPath} --confdir {Server.ConfigPath} --savesdir {Server.SavesPath}",
-                    UseShellExecute = false
-                }
-            };
-            updateProcess.Start();
+                throw new Exception($"Can't delete oldest folder ({oldestVersion}), build is running here. Please delete it later");
+            }
+
+            var delete = new Process {StartInfo = new ProcessStartInfo("rm", $"-rf {oldestVersion}")};
+            delete.Start();
+            delete.WaitForExit();
+        }
+
+        private static void StartUpdateScript(string newDirectoryPath, string previousDirectoryPath, string liveSymlinkPath)
+        {
+            var updateProcessStartInfo = new ProcessStartInfo("perl",
+                $"update-server.pl --cdir {newDirectoryPath} --pdir {previousDirectoryPath} --lsym {liveSymlinkPath}");
+            var updateProcess = new Process {StartInfo = updateProcessStartInfo};
+
+            bool started = updateProcess.Start();
+
+            if (!started)
+            {
+                throw new Exception("Failed to start update process.");
+            }
+
             updateProcess.WaitForExit();
+
             if (updateProcess.ExitCode != 0)
             {
-                _result = new GameServerResponceModel("Update process was not successful", true);
+                throw new Exception($"Something went wrong. Check console.");
             }
-        }
 
-        private void DownloadBuild()
-        {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "git",
-                    WorkingDirectory = Config.WorkingDirectory,
-                    Arguments = $"clone {Config.ServerRepo} {CurrentFolderPath}",
-                    UseShellExecute = false
-                },
-            };
-
-            process.Start();
-            process.WaitForExit();
-
-            if (process.ExitCode != 0)
-            {
-                _result = new GameServerResponceModel("Download process was not succesfull", true);
-            }
         }
     }
 }

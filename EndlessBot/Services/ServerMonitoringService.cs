@@ -6,6 +6,7 @@ using Discord.Rest;
 using Discord.WebSocket;
 using EndlessConfiguration;
 using EndlessConfiguration.Models;
+using EndlessConfiguration.Models.Server;
 
 namespace BotCore.Services
 {

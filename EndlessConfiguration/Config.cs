@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using EndlessConfiguration.Models;
 using EndlessConfiguration.Models.Backend;
+using EndlessConfiguration.Models.Server;
 using Newtonsoft.Json;
 
 namespace EndlessConfiguration
@@ -63,6 +64,13 @@ namespace EndlessConfiguration
                 Console.WriteLine(e.ToString());
                 Console.WriteLine("Your config file is not presented or corrupt");
             }
+        }
+
+        public static void UpdateConfig(string path = "config.json")
+        {
+            var config = new Config();
+            string serialized = JsonConvert.SerializeObject(config);
+            File.WriteAllText(path, serialized);
         }
     }
 }

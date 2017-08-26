@@ -1,5 +1,6 @@
 ﻿using EndlessConfiguration;
 using EndlessConfiguration.Models;
+using EndlessConfiguration.Models.Server;
 
 namespace BotCore.Interfaces
 {

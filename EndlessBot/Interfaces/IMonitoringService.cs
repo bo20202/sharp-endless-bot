@@ -4,6 +4,7 @@ using BotCore.Services;
 using Discord.Rest;
 using Discord.WebSocket;
 using EndlessConfiguration.Models;
+using EndlessConfiguration.Models.Server;
 
 namespace BotCore.Interfaces
 {

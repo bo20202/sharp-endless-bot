@@ -9,6 +9,7 @@ using BotCore.Interfaces;
 using Discord.Commands;
 using EndlessConfiguration;
 using EndlessConfiguration.Models;
+using EndlessConfiguration.Models.Server;
 
 namespace BotCore.Services
 {

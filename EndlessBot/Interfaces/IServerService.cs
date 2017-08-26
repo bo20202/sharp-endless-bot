@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Discord.Commands;
 using EndlessConfiguration.Models;
+using EndlessConfiguration.Models.Server;
 
 namespace BotCore.Interfaces
 {

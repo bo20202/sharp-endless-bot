@@ -22,7 +22,7 @@ namespace EndlessBackend
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
-            Config.LoadConfig("/home/bo20202/bot/config.json");
+            Config.LoadConfig();
         }
 
         public IConfigurationRoot Configuration { get; }

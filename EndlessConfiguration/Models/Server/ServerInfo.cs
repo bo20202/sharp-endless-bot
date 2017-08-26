@@ -5,7 +5,7 @@ namespace EndlessConfiguration.Models
     public class ServerInfo
     {
         [JsonIgnore]
-        public Server Server { get; set; }
+        public Server.Server Server { get; set; }
 
         [JsonProperty("players")]
         public int Players { get; set; }

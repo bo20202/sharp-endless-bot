@@ -1,4 +1,4 @@
-﻿namespace EndlessConfiguration.Models
+﻿namespace EndlessConfiguration.Models.Server
 {
     public class Server
     {
@@ -9,9 +9,9 @@
         public string ExecutablePath { get; set; }
         public string ExecutableName { get; set; }
         public ulong LogChannel { get; set; }
-        public string ConfigPath { get; set; }
-        public string SavesPath { get; set; }
         public string DmeName { get; set; }
+        public string VersionsDirectory { get; set; }
+        public string CurrentVersion { get; set; }
 
         public string ByondAddress => $"byond://{Ip}:{Port}";
     }
