@@ -19,6 +19,8 @@ namespace EndlessBackend.Services
             _server = server;
         }
 
+        private string _newVersionPath;
+
         public static UpdateService Inititalize (string serverName)
         {
             var server = Config.Servers.Single(x => x.ShortName == serverName);
@@ -35,19 +37,24 @@ namespace EndlessBackend.Services
                     throw new Exception("Can't update, please initialize");
                 }
 
-                string newVersionPath = $"{_server.VersionsDirectory}{DateTime.Now:yyyyMMddHHmm}";
+                string newVersionDirectoryName = DateTime.Now.ToString("yyyyMMddHHmm");
+                _newVersionPath = $"{_server.VersionsDirectory}{newVersionDirectoryName}";
                 string currentVersionPath = $"{_server.VersionsDirectory}{_server.CurrentVersion}";
-                StartUpdateScript(newVersionPath, currentVersionPath, _server.ExecutablePath);
+                StartUpdateScript(_newVersionPath, currentVersionPath, _server.ExecutablePath);
 
                 string oldestVersionPath = directoryList.OrderBy(x => x).First();
                 DeleteOldestVersion(oldestVersionPath);
-                _server.CurrentVersion = newVersionPath;
+                _server.CurrentVersion = newVersionDirectoryName;
                 Config.UpdateConfig();
 
                 return new GameServerResponceModel("Server is updated.", false);
             }
             catch (Exception e)
             {
+                if (Directory.Exists(_newVersionPath))
+                {
+                    Directory.Delete(_newVersionPath, true);
+                }
                 return new GameServerResponceModel(e.Message, true);
             }
         }

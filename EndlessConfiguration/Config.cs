@@ -69,7 +69,7 @@ namespace EndlessConfiguration
         public static void UpdateConfig(string path = "config.json")
         {
             var config = new Config();
-            string serialized = JsonConvert.SerializeObject(config);
+            string serialized = JsonConvert.SerializeObject(config, Formatting.Indented);
             File.WriteAllText(path, serialized);
         }
     }
