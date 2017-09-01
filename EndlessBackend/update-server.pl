@@ -29,10 +29,6 @@ system("git", "-C", "$cdir", "pull", "-q");
 print("Compiling current version.\n");
 system("DreamMaker", "$cdir/cev_eris.dme");
 
-print("Copying data and config folders\n");
-dircopy("$pdir/config", "$cdir") or die "Failed to copy config";
-dircopy("$pdir/data", "$cdir") or die "Failed to copy data";
-
 print("Creating symlink to current version");
 system("ln", "-sfn", "$cdir", "$lsym");
 
